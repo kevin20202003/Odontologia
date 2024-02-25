@@ -1,0 +1,96 @@
+﻿@model IEnumerable<Odontologia.Models.Entidades.Contacto>
+@{
+    ViewData["Title"] = "ListadoContactos";
+
+}
+@if (TempData["ALertMessage"] != null)
+{
+    <div class=" alert alert-success">
+        <strong> Ok!!---</strong>@TempData["AlertMessage"]
+    </div>
+}
+
+<p>
+    <a onclick="showInPopup('@Url.Action("Crear", "Contacto",
+    new { id = 0 }, Context.Request.Scheme)' ,
+    '')" class="btn btn-sm btn-primary text-white">
+        <i class="fa fa-plus-circle"></i> Agregar un contacto
+    </a>
+</p>
+
+<div class="col-md-12">
+    <div class="card">
+        <div class=" card-header text-center">
+            <h5>Lista de Contactos</h5>
+        </div>
+        <div class=" card-body">
+            <table id="contacto" class="table table-hover table responsive table stripped">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Correo</th>
+                        <th scope="col">Telefono</th>
+                        <th scope="col">Mensaje</th>
+                        <th scope="col">Fecha</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <th scope="row">@item.id_contacto</th>
+                            <td> @Html.DisplayFor(modelItem => item.nombre)</td>
+                            <td> @Html.DisplayFor(modelItem => item.email)</td>
+                            <td> @Html.DisplayFor(modelItem => item.telefono)</td>
+                            <td> @Html.DisplayFor(modelItem => item.mensaje)</td>
+                            <td> @item.fecha.ToString("dd-MM-yyyy") </td>
+                            <td>
+                                <a onclick="showInPopup('@Url.Action("Editar", "Contacto",
+                                new { id = item.id_contacto }, Context.Request.Scheme)' ,
+                                  'Actualizar Contacto')" class="btn btn-outline-warning btn-sm">
+                                    <i class="fa fa-pencil-alt"></i>
+                                </a>
+                                <button data-id="@item.id_contacto"
+                                        class="btn btn-outline-danger btn-sm deleteItem"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteDialog">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<partial name="_MostrarModal" />
+<partial name="_ModalEliminar" />
+
+
+@section Scripts {
+
+    <script src="~/js/showmodal.js"></script>
+
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#contacto').DataTable(
+                {
+                    "language": {
+                        url: "https://cdn.datatables.net/plug-ins/1.11.5/i18n/es-ES.json"
+                    },
+                });
+        });
+    </script>
+
+    <script>
+        sc_deleteDialog.openModal('deleteItem', true, 'btnYesDelete', '/Contacto/Eliminar/', false);
+    </script>
+}
+
+
